@@ -9,6 +9,8 @@ class QListWidget;
 class QPushButton;
 class QLabel;
 class QSpinBox;
+class QLineEdit;
+class QString;
 
 class frmMain : public QWidget{
 	Q_OBJECT
@@ -25,9 +27,12 @@ private:
 	QListWidget *clientLists;
 	QPushButton *listenButton;
 	QLabel *portLabel;
+	QLabel *ipLabel;
+	QLineEdit *ipAddress;
 	QSpinBox *portValue;
 	myTcpServer *server;
 	void init();
+	QString GetIpAddress();
 };
 
 #endif

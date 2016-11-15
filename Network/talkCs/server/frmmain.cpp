@@ -4,15 +4,18 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSpinBox>
+#include <QtNetwork>
+#include <string.h>
 #include <QDebug>
 
 frmMain::
 frmMain(QWidget *parent)
 : QWidget(parent)
 {
-	this->init();
 	server = new myTcpServer(this);
+	this->init();
 	connect(server, SIGNAL(ClientConnect(addressMsg)),
 			this, SLOT(ClientConnect(addressMsg)));
 	connect(server, SIGNAL(ClientDisConnect(addressMsg, int)),
@@ -27,6 +30,10 @@ void frmMain::
 init(){
 	resize(300, 500);
 	clientLists = new QListWidget;
+	ipLabel = new QLabel(tr("ip 地址："));
+	ipAddress = new QLineEdit;
+	ipAddress->setText(GetIpAddress());
+	ipLabel->setBuddy(ipAddress);
 	portLabel = new QLabel(tr("端口："));
 	portValue = new QSpinBox;
 	portValue->setRange(1001, 65534);
@@ -37,18 +44,61 @@ init(){
 	portLayout->addWidget(portLabel);
 	portLayout->addWidget(portValue);
 
+	QHBoxLayout *ipLayout = new QHBoxLayout;
+	ipLayout->addWidget(ipLabel);
+	ipLayout->addWidget(ipAddress);
+
 	listenButton = new QPushButton(tr("监听"));
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(clientLists);
+	mainLayout->addLayout(ipLayout);
 	mainLayout->addLayout(portLayout);
 	mainLayout->addWidget(listenButton);
 
 	setLayout(mainLayout);
 }
 
+QString frmMain::
+GetIpAddress(){
+	QString ip;
+	QList<QHostAddress> ipAddressList = 
+		QNetworkInterface::allAddresses();
+	for(int i = 0; i < ipAddressList.size(); i++){
+		if(ipAddressList.at(i) != QHostAddress::LocalHost &&
+		   ipAddressList.at(i).toIPv4Address()){
+			ip = ipAddressList.at(i).toString();
+			break;
+		}
+	}
+	if(ip.isEmpty())
+		ip = QHostAddress(QHostAddress::LocalHost).toString();
+	return ip;
+}
+
 void frmMain::
 ClientReadData(addressMsg msg, QByteArray data){
+	char *buffer = data.data();
+	if(*buffer == 'm'){
+		++buffer;
+		int len = strchr(buffer, '#') - buffer;
+		char ip[40];
+		strncpy(ip, buffer, len);
+		QString address(ip);
+		addressMsg newMsg;
+		newMsg.clientID = address.split(":")[0].toInt();
+		newMsg.IP = address.split(":")[1];
+		newMsg.Port = address.split(":")[2].toInt();
+		QString newData = "m" + tr("%1:%2:%3#").arg(msg.clientID)
+			                                  .arg(msg.IP).arg(msg.Port)
+											  + QString(buffer+len+1);
+		server->SendData(newMsg, newData.toAscii());
+		//qDebug() << newMsg.clientID;
+		//qDebug() << newMsg.IP;
+		//qDebug() << newMsg.Port;
+		//qDebug() << newData;
+	}
+	//qDebug() << data;
 }
 
 void frmMain::

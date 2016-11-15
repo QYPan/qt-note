@@ -22,25 +22,33 @@ static const uint qt_meta_data_frmMain[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+      13,    9,    8,    8, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-       9,    8,    8,    8, 0x08,
-      20,    8,    8,    8, 0x08,
-      60,    8,    8,    8, 0x08,
+      37,    8,    8,    8, 0x08,
+      48,    8,    8,    8, 0x08,
+      88,    8,    8,    8, 0x08,
+     111,    9,    8,    8, 0x08,
+     138,  133,    8,    8, 0x08,
+     171,    9,    8,    8, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_frmMain[] = {
-    "frmMain\0\0ReadData()\0"
-    "ReadError(QAbstractSocket::SocketError)\0"
-    "ConnectButtonClicked()\0"
+    "frmMain\0\0msg\0itemHasClicked(QString)\0"
+    "ReadData()\0ReadError(QAbstractSocket::SocketError)\0"
+    "ConnectButtonClicked()\0creatTalkWin(QString)\0"
+    "item\0changeToString(QListWidgetItem*)\0"
+    "sendButtonClicked(QString)\0"
 };
 
 void frmMain::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -49,9 +57,13 @@ void frmMain::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         Q_ASSERT(staticMetaObject.cast(_o));
         frmMain *_t = static_cast<frmMain *>(_o);
         switch (_id) {
-        case 0: _t->ReadData(); break;
-        case 1: _t->ReadError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
-        case 2: _t->ConnectButtonClicked(); break;
+        case 0: _t->itemHasClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 1: _t->ReadData(); break;
+        case 2: _t->ReadError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
+        case 3: _t->ConnectButtonClicked(); break;
+        case 4: _t->creatTalkWin((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 5: _t->changeToString((*reinterpret_cast< QListWidgetItem*(*)>(_a[1]))); break;
+        case 6: _t->sendButtonClicked((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -89,10 +101,17 @@ int frmMain::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 7;
     }
     return _id;
+}
+
+// SIGNAL 0
+void frmMain::itemHasClicked(QString _t1)
+{
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE
