@@ -24,8 +24,8 @@ private:
 	QPushButton *connectButton;
 	QLabel *ipLabel;
 	QLineEdit *ipAddress;
-	QLabel *portLabel;
-	QSpinBox *portValue;
+	QLabel *portLabel, *portLabel2;
+	QSpinBox *portValue, *portValue2;
 	QTcpSocket *tcpClient;
 	void Init();
 };

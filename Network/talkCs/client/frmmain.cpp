@@ -15,23 +15,28 @@ frmMain::
 frmMain(QWidget *parent)
 : QWidget(parent)
 {
-	this->Init();
 	tcpClient = new QTcpSocket(this);
 	tcpClient->abort(); // 取消原有连接
 	connect(tcpClient, SIGNAL(readyRead()), this, SLOT(ReadData()));
 	connect(tcpClient, SIGNAL(error(QAbstractSocket::SocketError)),
 			this, SLOT(ReadError(QAbstractSocket::SocketError)));
+	this->Init();
 }
 
 void frmMain::
 Init(){
 	resize(300, 500);
 	clientList = new QListWidget;
-	portLabel = new QLabel(tr("端口："));
+	portLabel = new QLabel(tr("远程端口："));
+	portLabel2 = new QLabel(tr("本地端口："));
 	portValue = new QSpinBox;
+	portValue2 = new QSpinBox;
 	portValue->setRange(1001, 65534);
 	portValue->setValue(60000);
+	portValue2->setRange(1001, 65534);
+	portValue2->setValue(tcpClient->peerPort());
 	portLabel->setBuddy(portValue);
+	portLabel2->setBuddy(portValue2);
 	ipLabel = new QLabel(tr("ip 地址："));
 	ipAddress = new QLineEdit;
 
@@ -53,6 +58,10 @@ Init(){
 	portLayout->addWidget(portLabel);
 	portLayout->addWidget(portValue);
 
+	QHBoxLayout *portLayout2 = new QHBoxLayout;
+	portLayout2->addWidget(portLabel2);
+	portLayout2->addWidget(portValue2);
+
 	QHBoxLayout *ipLayout = new QHBoxLayout;
 	ipLayout->addWidget(ipLabel);
 	ipLayout->addWidget(ipAddress);
@@ -63,6 +72,7 @@ Init(){
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(clientList);
 	mainLayout->addLayout(ipLayout);
+	mainLayout->addLayout(portLayout2);
 	mainLayout->addLayout(portLayout);
 	mainLayout->addWidget(connectButton);
 
@@ -116,6 +126,7 @@ ConnectButtonClicked(){
 		if(tcpClient->state() == QAbstractSocket::UnconnectedState ||
 		   tcpClient->waitForDisconnected(1000)){
 			connectButton->setText("连接");
+			clientList->clear();
 		}
 	}
 }
